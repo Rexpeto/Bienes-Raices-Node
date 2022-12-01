@@ -29,3 +29,30 @@ export const emailRegistro = async (datos) => {
         `
     });
 }
+
+export const emailPassword = async (datos) => {
+    const transport = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    //? Extraer datos
+    const {nombre, email, token} = datos;
+    
+    //? Enviar el email
+    await transport.sendMail({
+        from: 'Bienesraicesnode.com',
+        to: email,
+        subject: 'Reestablecer la contraseña de Bienes Raices Node',
+        text: 'Reestablecer la contraseña de Bienes Raices node',
+        html: `
+            <p>Hola ${nombre}, reestablecer la contraseña de tu cuenta</p>
+            <p>Tu cuenta está lista, solo debes darle al boton de reestablecer la contraseña: <a href="${process.env.BACKEND_URL}:${process.env.BD_PORT ?? 3000}/auth/olvide/${token}">Reestablecer</a></p>
+            <p>Si tu no quieres reestablecer la contraseña, ignora este correo</p>
+        `
+    });
+}

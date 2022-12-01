@@ -1,7 +1,8 @@
 import {check, validationResult} from 'express-validator';
+import bcrypt from 'bcrypt';
 import Usuario from '../models/Usuario.js';
 import { generarId } from '../helpers/Tokens.js';
-import { emailRegistro } from '../helpers/emails.js';
+import { emailPassword, emailRegistro } from '../helpers/emails.js';
 
 //* Formulario de login 
 export const formularioLogin = (req, res) => {
@@ -116,5 +117,109 @@ export const formularioOlvido = (req, res) => {
     res.render('auth/olvide.pug', {
         pagina: 'Recuperar contraseña',
         csrfToken: req.csrfToken()
+    });
+}
+
+//* Validando el formularioOlvido por method POST
+export const resetPassword = async (req, res) => {
+    await check('email').isEmail().withMessage('No es un correo válido').run(req);
+
+    let resultado = validationResult(req);
+
+    //? Verificar que resultado esté vacío
+    if(!resultado.isEmpty()) {
+        return res.render('auth/olvide.pug', {
+            pagina: 'Recuperar contraseña',
+            csrfToken: req.csrfToken(),
+            errores: resultado.array()
+        });
+    }
+
+    //? Buscar el usuario
+    const {email} = req.body;
+
+    const usuario = await Usuario.findOne({where: {email}});
+
+    if(!usuario) {
+        return res.render('auth/olvide.pug', {
+            pagina: 'Recuperar contraseña',
+            csrfToken: req.csrfToken(),
+            errores: [{msg: 'El email no existe!!'}]
+        });
+    }
+
+    //? Generar un token y enviar email
+    usuario.token = generarId();
+    await usuario.save();
+
+    //? Enviar email
+    emailPassword({
+        email: usuario.email,
+        nombre: usuario.nombre,
+        token: usuario.token
+    });
+
+    //? Renderizar un mensaje
+    res.render('templates/mensaje.pug', {
+        pagina: 'Restablece tu contraseña',
+        mensaje: 'Hemos enviado un email con las instrucciones'
+    });
+}
+
+//* Comprueba el token del correo del password 
+export const comprobarToken = async (req, res) => {
+    const {token} = req.params;
+
+    const usuario = await Usuario.findOne({where: {token}});
+
+    //? En caso de un token inválido 
+    if(!usuario) {
+        return res.render('../views/auth/confirmarCuenta.pug', {
+            pagina: 'Reestablecer contraseña',
+            mensaje: 'Oops!! Hubo un error al reestablecer la contraseña',
+            csrfToken: req.csrfToken(),
+            error: true
+        });
+    }
+
+    //? Mostrar formulario para modificar el password
+    res.render('auth/resetPassword', {
+        pagina: 'Establecer nueva contraseña',
+        csrfToken: req.csrfToken()
+    });
+}
+
+//* Muestra el formulario para establecer un nuevo password 
+export const nuevoPassword = async (req, res) => {
+    //? Verificar los datos
+    await check('password').isLength({min: 6}).withMessage('El password debe ser al menos 6 caracteres').run(req);
+
+    let resultado = validationResult(req);
+
+    if(!resultado.isEmpty()) {
+        return res.render('auth/resetPassword', {
+            pagina: 'Establecer nueva contraseña',
+            csrfToken: req.csrfToken(),
+            errores: resultado.array()
+        });
+    }
+
+    //? Identificar al usuario
+    const {token} = req.params;
+    const {password} = req.body;
+
+    const usuario = await Usuario.findOne({where: {token}});
+    
+    //? hashear el nuevo password
+    const salt = await bcrypt.genSalt(10);
+    usuario.password = await bcrypt.hash(password, salt);
+    usuario.token = null;
+
+    await usuario.save();
+
+    //? Mensaje de exito
+    res.render('../views/auth/confirmarCuenta.pug', {
+        pagina: 'Contraseña establecida',
+        mensaje: 'Su contraseña ha sido establecida con exito!'
     });
 }
