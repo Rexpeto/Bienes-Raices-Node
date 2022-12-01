@@ -6,14 +6,16 @@ import { emailRegistro } from '../helpers/emails.js';
 //* Formulario de login 
 export const formularioLogin = (req, res) => {
     res.render('auth/login.pug', {
-        pagina: 'Iniciar sesión'
+        pagina: 'Iniciar sesión',
+        csrfToken: req.csrfToken()
     });
 }
 
 //* Formulario de registro 
 export const formularioRegister = (req, res) => {
     res.render('auth/register.pug', {
-        pagina: 'Crear cuenta'
+        pagina: 'Crear cuenta',
+        csrfToken: req.csrfToken()
     });
 }
 
@@ -34,6 +36,7 @@ export const registrar = async (req, res) => {
         return res.render('auth/register', {
             pagina: 'Crear cuenta',
             errores: resultado.array(),
+            csrfToken: req.csrfToken(),
             usuario: {
                 nombre,
                 email
@@ -48,6 +51,7 @@ export const registrar = async (req, res) => {
         return res.render('auth/register', {
             pagina: 'Crear cuenta',
             errores: [{msg: 'El usuario ya existe'}],
+            csrfToken: req.csrfToken(),
             usuario: {
                 nombre,
                 email
@@ -89,6 +93,7 @@ export const confirmar = async (req, res) => {
         return res.render('../views/auth/confirmarCuenta.pug', {
             pagina: 'Confimar cuenta',
             mensaje: 'Oops!! Hubo un error al confirmar tu cuenta',
+            csrfToken: req.csrfToken(),
             error: true
         });
     }
@@ -101,13 +106,15 @@ export const confirmar = async (req, res) => {
     //?  Mostrar el mensaje de confirmación
     res.render('../views/auth/confirmarCuenta.pug', {
         pagina: 'Confimar cuenta',
-        mensaje: 'Tu cuenta ha sido confirmada con exito!'
+        mensaje: 'Tu cuenta ha sido confirmada con exito!',
+        csrfToken: req.csrfToken()
     });
 }
 
 //* Formulario de olvide password 
 export const formularioOlvido = (req, res) => {
     res.render('auth/olvide.pug', {
-        pagina: 'Recuperar contraseña'
+        pagina: 'Recuperar contraseña',
+        csrfToken: req.csrfToken()
     });
 }
