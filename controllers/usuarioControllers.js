@@ -1,5 +1,6 @@
 import {check, validationResult} from 'express-validator';
 import Usuario from '../models/Usuario.js';
+import { generarId } from '../helpers/Tokens.js';
 
 //* Formulario de login 
 export const formularioLogin = (req, res) => {
@@ -58,7 +59,7 @@ export const registrar = async (req, res) => {
         nombre,
         email,
         password,
-        token: 123456789
+        token: generarId()
     });
 }
 
