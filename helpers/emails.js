@@ -20,12 +20,12 @@ export const emailRegistro = async (datos) => {
     await transport.sendMail({
         from: 'Bienesraicesnode.com',
         to: email,
-        subject: 'Confirma tu cuenta en Biens Raices Node',
+        subject: 'Confirma tu cuenta en Bienes Raices Node',
         text: 'Confirma tu cuenta de Bienes Raices node',
         html: `
             <p>Hola ${nombre}, confirma tu cuenta en bienes raices</p>
-            <p>Tu cuenta está lista, solo debes darle al boton de confirmar: <a href="">Confirmar</a></p>
+            <p>Tu cuenta está lista, solo debes darle al boton de confirmar: <a href="${process.env.BACKEND_URL}:${process.env.BD_PORT ?? 3000}/auth/confirmar/${token}">Confirmar</a></p>
             <p>Si tu no creaste esta cuenta, ignora este correo</p>
         `
-    })
+    });
 }
