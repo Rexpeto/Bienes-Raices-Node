@@ -1,0 +1,30 @@
+extends ../layout/index
+
+block contenido 
+    .py-5 
+        h1.text-4xl.my-8.font-extrabold.text-center Bienes
+            span.font-normal Raices
+        h2.text-center.text-2xl.font-extrabold=pagina
+
+        .mt-3.mx-auto.max-w-md
+            .bg-white.py-8.px-4.shadow
+                form(action="post").space-y-5
+                    div
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold(for="nombre") Tu nombre
+                        input#nombre.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-2(placeholder="Tu nombre" type="text" name="nombre")
+                    div
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="email") Email
+                        input#email.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-2(placeholder="Tu email" type="email" name="email")
+                    div
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="password") Password
+                        input#password.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-2(placeholder="Tu password" type="password" name="password")
+                    div
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="password_r") Repetir Password
+                        input#password_r.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-2(placeholder="Repite tu password" type="password" name="password_r")
+                    
+                    .flex.items-center.justify-between 
+                        p.text-gray-500 ¿Ya tienes cuenta?
+                            a(href="/auth/login" class="hover:text-gray-700")  Iniciar sesión
+                        a.text-gray-500(href="/auth/olvide" class="hover:text-gray-700") Olvide mi contraseña
+
+                    input(class="w-full bg-indigo-600 text-white cursor-pointer py-2 transition-colors hover:bg-indigo-700" type="submit", value="Crear cuenta")
