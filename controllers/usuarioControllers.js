@@ -61,6 +61,12 @@ export const registrar = async (req, res) => {
         password,
         token: generarId()
     });
+
+    //? Mostrar mensaje de confirmación
+    res.render('templates/mensaje.pug', {
+        pagina: 'Confirma tu cuenta',
+        mensaje: 'Revisa tu correo electronico para confirmar tu cuenta'
+    });
 }
 
 //* Formulario de olvide password 
