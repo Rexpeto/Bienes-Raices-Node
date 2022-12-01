@@ -77,6 +77,34 @@ export const registrar = async (req, res) => {
     });
 }
 
+//* Confirma el usuario por medio del token
+export const confirmar = async (req, res) => {
+    const {token} = req.params;
+    console.log(token);
+
+    //? Verificar si el token es válido
+    const usuario = await Usuario.findOne({where: {token}});
+
+    if(!usuario) {
+        return res.render('../views/auth/confirmarCuenta.pug', {
+            pagina: 'Confimar cuenta',
+            mensaje: 'Oops!! Hubo un error al confirmar tu cuenta',
+            error: true
+        });
+    }
+
+    //? Confirmar la cuenta
+    usuario.token = null;
+    usuario.confirmado = true;
+    await usuario.save();
+
+    //?  Mostrar el mensaje de confirmación
+    res.render('../views/auth/confirmarCuenta.pug', {
+        pagina: 'Confimar cuenta',
+        mensaje: 'Tu cuenta ha sido confirmada con exito!'
+    });
+}
+
 //* Formulario de olvide password 
 export const formularioOlvido = (req, res) => {
     res.render('auth/olvide.pug', {
