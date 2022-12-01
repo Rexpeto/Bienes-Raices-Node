@@ -1,6 +1,9 @@
 import express from "express";
+import dotenv from 'dotenv';
 import usuariosRoutes from "./routes/usuariosRoutes.js";
 import db from "./config/db.js";
+
+dotenv.config({path:'.env'});
 
 //* Crear app
 const app = express();
@@ -18,7 +21,7 @@ try {
 }
 
 //* Definir puerto
-const port = 4000;
+const port = process.env.BD_PORT || 3000;
 
 //* Habilitar pug
 app.set('view engine', 'pug');
