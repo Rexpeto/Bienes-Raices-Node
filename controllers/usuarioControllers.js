@@ -25,7 +25,7 @@ export const registrar = async (req, res) => {
     let resultado = validationResult(req);
 
     //? Extraer los datos
-    const {nombre, email} = req.body;
+    const {nombre, email, password} = req.body;
 
     //? Verificar que resultado esté vacío
     if(!resultado.isEmpty()) {
@@ -53,8 +53,13 @@ export const registrar = async (req, res) => {
         });
     }
 
-    const usuario = await Usuario.create(req.body);
-    res.json(usuario);
+    //? Almacenar un usuario
+    await Usuario.create({
+        nombre,
+        email,
+        password,
+        token: 123456789
+    });
 }
 
 //* Formulario de olvide password 
