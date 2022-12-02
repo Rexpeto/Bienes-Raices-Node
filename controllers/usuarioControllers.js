@@ -1,7 +1,7 @@
 import {check, validationResult} from 'express-validator';
 import bcrypt from 'bcrypt';
 import Usuario from '../models/Usuario.js';
-import { generarId } from '../helpers/Tokens.js';
+import { generarId, generarJWT } from '../helpers/Tokens.js';
 import { emailPassword, emailRegistro } from '../helpers/emails.js';
 
 //* Formulario de login 
@@ -58,6 +58,14 @@ export const autenticar = async (req, res) => {
             errores: [{msg: 'Contraseña incorrecta'}]
         });
     }
+
+    //? Autenticar usuario
+    const token = generarJWT(usuario.id);
+
+    //? Almacenar en un cookie
+    return res.cookie('_token', token, {
+        httpOnly: true
+    }).redirect('/mis-propiedades');
 }
 
 //* Formulario de registro 
