@@ -12,6 +12,54 @@ export const formularioLogin = (req, res) => {
     });
 }
 
+//* Autentica el usuario
+export const autenticar = async (req, res) => {
+    //? Validación
+    await check('email').isEmail().withMessage('No es un correo válido').run(req);
+    await check('password').notEmpty().withMessage('El password es obligatorio').run(req);
+
+    const resultado = validationResult(req);
+    
+    if(!resultado.isEmpty()) {
+        res.render('auth/login.pug', {
+            pagina: 'Iniciar sesión',
+            csrfToken: req.csrfToken(),
+            errores: resultado.array()
+        });
+    }
+
+    //? Comprobar si el usuario existe
+    const {email, password} = req.body;
+
+    const usuario = await Usuario.findOne({where: {email}});
+
+    if(!usuario) {
+        res.render('auth/login.pug', {
+            pagina: 'Iniciar sesión',
+            csrfToken: req.csrfToken(),
+            errores: [{msg: 'El usuario no existe'}]
+        });
+    }
+
+    //? Comprobar si el usuario está confirmado
+    if(!usuario.confirmado) {
+        res.render('auth/login.pug', {
+            pagina: 'Iniciar sesión',
+            csrfToken: req.csrfToken(),
+            errores: [{msg: 'El usuario no está confirmado'}]
+        });
+    }
+
+    //? Comprobar el password
+    if(!usuario.verificarPassword(password)) {
+        res.render('auth/login.pug', {
+            pagina: 'Iniciar sesión',
+            csrfToken: req.csrfToken(),
+            errores: [{msg: 'Contraseña incorrecta'}]
+        });
+    }
+}
+
 //* Formulario de registro 
 export const formularioRegister = (req, res) => {
     res.render('auth/register.pug', {
