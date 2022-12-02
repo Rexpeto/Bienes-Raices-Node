@@ -3,6 +3,7 @@ import csrf from "csurf";
 import cookieParser from "cookie-parser";
 import dotenv from 'dotenv';
 import usuariosRoutes from "./routes/usuariosRoutes.js";
+import propiedadRoutes from './routes/propiedadRoutes.js';
 import db from "./config/db.js";
 
 dotenv.config({path:'.env'});
@@ -40,6 +41,7 @@ app.use(express.static('public'));
 
 //* Routing
 app.use('/auth', usuariosRoutes);
+app.use('/', propiedadRoutes);
 
 app.listen(port, () => {
     console.log(`El servidor esta funcionando en el puerto ${port}`);
