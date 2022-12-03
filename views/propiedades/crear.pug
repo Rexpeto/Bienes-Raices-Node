@@ -1,0 +1,56 @@
+extends ../layout/index
+
+block contenido 
+    .py-5 
+        h2.text-center.text-2xl.font-extrabold=pagina
+    
+    div(class="bg-white shadow px-4 py-8 rounded mx-auto max-w-4xl my-5 md:px-10")
+        form(method='POST').space-y-8
+            div.space-y-3
+                h3.text-lg.leading-6.font-medium.text-gray-900 Información General
+                p.text-gray-600 Añade información sobre la propiedad a vender
+
+                div.space-y-2
+                    label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="titulo") Titulo del anuncio
+                    input#titulo.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-(placeholder="Titulo de publicación" type="text" name="titulo")
+
+                div(class="md:flex md:gap-4 md:justify-between space-y-5 md:space-y-0") 
+
+                    div.space-y-2(class="md:w-1/2")
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="categoria") Categoría
+                        select#categoria.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-(name="categoria")
+                            option(value="" hidden) -Seleccione- 
+                            option(value="1") Mansión 
+
+                    div.space-y-2(class="md:w-1/2")
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="precio") Precio
+                        select#precio.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-(name="precio")
+                            option(value="" hidden) -Seleccione- 
+                            option(value="10000") 10000
+                            option(value="20000") 20000
+                div(class="md:flex md:gap-4 md:justify-between space-y-5 md:space-y-0") 
+
+                    div.space-y-2(class="md:w-1/3")
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="wc") Baños
+                        select#wc.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-(name="wc")
+                            option(value="" hidden) -Seleccione- 
+                            - let e = 1
+                                while e <= 10
+                                    option(value=e) #{e++}
+
+                    div.space-y-2(class="md:w-1/3")
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="habitacion") Habitaciones
+                        select#habitacion.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-(name="habitacion")
+                            option(value="" hidden) -Seleccione-
+                            - let g = 1
+                                while g <= 10
+                                    option(value=g) #{g++}
+
+                    div.space-y-2(class="md:w-1/3")
+                        label.block-text-sm-uppercase.text-gray-500.mb-3.font-bold.mt-3(for="estacionamiento") Estacionamientos
+                        select#estacionamiento.w-full.px-3.py-1.border.border-gray-300.rounded-md.placeholder-gray-400.mt-(name="estacionamiento")
+                            option(value="" hidden) -Seleccione- 
+                            - let n = 1
+                                while n <= 10
+                                    option(value=n) #{n++}
+            
