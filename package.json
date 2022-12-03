@@ -8,7 +8,8 @@
     "start": "node ./index.js",
     "server": "nodemon ./index.js",
     "css": "postcss public/css/tailwind.css -o public/css/app.css --watch",
-    "js": "webpack --watch"
+    "js": "webpack --watch",
+    "dev": "concurrently \"npm run css\" \"npm run js\""
   },
   "keywords": [
     "MVC",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
+    "concurrently": "^7.6.0",
     "nodemon": "^2.0.20",
     "postcss": "^8.4.19",
     "postcss-cli": "^10.0.0",
