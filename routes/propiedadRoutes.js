@@ -1,11 +1,12 @@
 import express from 'express';
 import { body } from 'express-validator';
 import { admin, crear, guardar } from '../controllers/propiedadControllers.js';
+import protegerRuta from '../middleware/protegerRuta.js';
 
 const router = express.Router();
 
-router.get('/mis-propiedades', admin);
-router.get('/propiedad/crear', crear);
+router.get('/mis-propiedades', protegerRuta, admin);
+router.get('/propiedad/crear', protegerRuta, crear);
 router.post('/propiedad/crear',
     body('titulo').notEmpty().withMessage('El titulo del anuncio es obligatorio!!'),
     body('descripcion').notEmpty().withMessage('La descripción es obligatoria'),
@@ -15,6 +16,7 @@ router.post('/propiedad/crear',
     body('habitaciones').isNumeric().withMessage('Seleccione la cantidad de habitaciones'),
     body('estacionamiento').isNumeric().withMessage('Seleccione la cantidad de estacionamientos'),
     body('lat').notEmpty().withMessage('Ubica la propiedad en el mapa'),
+    protegerRuta,
     guardar
 );
 
