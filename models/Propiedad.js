@@ -16,14 +16,6 @@ const Propiedad = db.define('propiedades', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    categoria: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    precio: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     wc: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -54,7 +46,7 @@ const Propiedad = db.define('propiedades', {
     },
     publicado: {
         type: DataTypes.BOOLEAN,
-        allowNull: false
+        allowNull: true
     }
 });
 
