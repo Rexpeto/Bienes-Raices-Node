@@ -52,6 +52,10 @@ export const guardar = async (req, res) => {
     try {
         //* Extraer datos del request
         const {titulo, descripcion, categoria:id_categoria, precio:id_precio, wc, habitaciones, estacionamiento, calle, lat, lng} = req.body;
+        const {id:id_usuario} = req.usuario;
+
+        console.log(id_usuario);
+
         const propiedadGuardar = await Propiedad.create({
             titulo,
             descripcion,
@@ -63,7 +67,12 @@ export const guardar = async (req, res) => {
             lng,
             id_categoria,
             id_precio,
+            id_usuario,
+            imagen: ''
         });
+
+        const {id} = propiedadGuardar;
+        res.redirect(`/propiedades/agregar-image/${id}`);
     } catch (error) {
         console.log(error);
     }
