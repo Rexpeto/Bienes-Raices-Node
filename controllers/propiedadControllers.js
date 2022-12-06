@@ -3,8 +3,7 @@ import {Precio, Categoria, Propiedad} from '../models/index.js';
 
 export const admin = (req, res) => {
     res.render('../views/propiedades/admin.pug', {
-        pagina: 'Mis propiedades',
-        barra: true
+        pagina: 'Mis propiedades'
     });
 }
 
@@ -17,7 +16,6 @@ export const crear = async (req, res) => {
     ]);
     res.render('../views/propiedades/crear.pug', {
         pagina: 'Crear Propiedad',
-        barra: true,
         csrfToken: req.csrfToken(),
         categorias,
         precios,
@@ -25,6 +23,7 @@ export const crear = async (req, res) => {
     });
 }
 
+//? Guarda las propiedades
 export const guardar = async (req, res) => {
     //? Validaciones
     let resultado = validationResult(req);
@@ -39,7 +38,6 @@ export const guardar = async (req, res) => {
 
         return res.render('../views/propiedades/crear.pug', {
             pagina: 'Crear Propiedad',
-            barra: true,
             csrfToken: req.csrfToken(),
             categorias,
             precios,
@@ -72,8 +70,16 @@ export const guardar = async (req, res) => {
         });
 
         const {id} = propiedadGuardar;
-        res.redirect(`/propiedades/agregar-image/${id}`);
+        res.redirect(`/propiedad/agregar-imagen/${id}`);
     } catch (error) {
         console.log(error);
     }
+}
+
+//? Agrega las imagenes a la propiedad creada
+export const agregarImagen = (req, res) => {
+    res.render('propiedades/agregar-imagen.pug', {
+        pagina: 'Agregar imagen',
+        csrfToken: req.csrfToken(),
+    });
 }
