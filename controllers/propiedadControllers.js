@@ -70,16 +70,69 @@ export const guardar = async (req, res) => {
         });
 
         const {id} = propiedadGuardar;
-        res.redirect(`/propiedad/agregar-imagen/${id}`);
+        res.redirect(`/propiedades/agregar-imagen/${id}`);
     } catch (error) {
         console.log(error);
     }
 }
 
 //? Agrega las imagenes a la propiedad creada
-export const agregarImagen = (req, res) => {
+export const agregarImagen = async (req, res) => {
+    const {id} = req.params;
+    const idUsuario = req.usuario.id;
+
+    //? Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id);
+
+    if(!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+    //? Validar que la propiedad no este publicada
+    if(propiedad.publicado) {
+        return res.redirect('/mis-propiedades');
+    }
+    //? Validar que la propiedad es del usuario
+    if(idUsuario !== propiedad.id_usuario) {
+        return res.redirect('/mis-propiedades');
+    }
+
+
     res.render('propiedades/agregar-imagen.pug', {
-        pagina: 'Agregar imagen',
+        pagina: `Agregar imagen de ${propiedad.titulo}`,
         csrfToken: req.csrfToken(),
+        propiedad
     });
+}
+
+export const almacenarImagen = async (req, res, next) => {
+    const {id} = req.params;
+    const idUsuario = req.usuario.id;
+
+    //? Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id);
+
+    if(!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+    //? Validar que la propiedad no este publicada
+    if(propiedad.publicado) {
+        return res.redirect('/mis-propiedades');
+    }
+    //? Validar que la propiedad es del usuario
+    if(idUsuario !== propiedad.id_usuario) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    try {
+        const {filename} = req.file;
+
+        //? Almacenar la imagen y publicar propiedad
+        propiedad.imagen = filename;
+        propiedad.publicado = 1;
+        await propiedad.save();
+        
+        next();
+    } catch (error) {
+        console.log(error);
+    }
 }

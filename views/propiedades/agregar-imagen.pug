@@ -1,7 +1,8 @@
 extends ../layout/admin
 
 block styles
-    link(rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.css")
+    meta(name="csrf-token" content=csrfToken)
 
 block contenido 
     .py-5 
@@ -13,10 +14,9 @@ block contenido
                 p.bg-red-600.text-white.uppercase.text-xs.text-center.p-2.mb-1.font-bold= error.msg
     
     div(class="bg-white shadow px-4 py-8 rounded mx-auto max-w-4xl my-5 md:px-10")
-        form(method='POST').space-y-8
-            input(type="hidden", name="_csrf" value=csrfToken)
+        form#imagen(method='POST' class="dropzone border-dashed border-2 w-full min:h-96 h-auto rounded flex-col justify-center items-center" action=`/propiedades/agregar-imagen/${propiedad.id}`)
 
-            input(type="submit", value="Públicar Propiedad" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded cursor-pointer text-center text-white uppercase font-bold ")
+        button#publicar(class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 rounded cursor-pointer text-center text-white uppercase font-bold mt-5") Públicar Propiedad
             
 block script 
-    
+    script(src="/js/agregarImagen.js") 
