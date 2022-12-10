@@ -149,3 +149,100 @@ export const almacenarImagen = async (req, res, next) => {
         console.log(error);
     }
 }
+
+export const editar = async (req, res) => {
+    //? Extraer parametro
+    const {id} = req.params;
+
+    //? Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id);
+
+    if(!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    //? Revisa si es el propietario de la publicación
+    if(propiedad.id_usuario.toString() !== req.usuario.id.toString()) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    //? Consultar modelo de precio y categoria
+    const [precios, categorias] = await Promise.all([
+        Precio.findAll(),
+        Categoria.findAll()
+    ]);
+    res.render('../views/propiedades/editar.pug', {
+        pagina: `Editar la propiedad ${propiedad.titulo}`,
+        csrfToken: req.csrfToken(),
+        categorias,
+        precios,
+        datos: propiedad
+    });
+}
+
+export const actualizar = async (req, res) => {
+    //? Validaciones
+    let resultado = validationResult(req);
+
+    //? Si el arreglo de resultado está vació
+    if(!resultado.isEmpty()) {
+        //? Consultar modelo de precio y categoria
+        const [precios, categorias] = await Promise.all([
+            Precio.findAll(),
+            Categoria.findAll()
+        ]);
+
+        console.log(req.body);
+
+        return res.render('../views/propiedades/editar.pug', {
+            pagina: `Editar la propiedad`,
+            csrfToken: req.csrfToken(),
+            categorias,
+            precios,
+            errores: resultado.array(),
+            datos: req.body
+        });
+    }
+
+    //? Extraer parametro
+    const {id} = req.params;
+
+    //? Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id);
+
+    if(!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    //? Revisa si es el propietario de la publicación
+    if(propiedad.id_usuario.toString() !== req.usuario.id.toString()) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    //? Reescribir el objecto y actualizarlo
+    try {
+        const {titulo, descripcion, categoria:id_categoria, precio:id_precio, wc, habitaciones, estacionamiento, calle, lat, lng} = req.body;
+
+        //* Actualizar el objecto en db
+        propiedad.set({
+            titulo,
+            descripcion,
+            categoria: id_categoria,
+            precio: id_precio,
+            wc,
+            habitaciones,
+            estacionamiento,
+            calle,
+            lat,
+            lng
+        });
+
+        await propiedad.save();
+
+        //* Setear la propiedad en memoria
+        res.redirect('/mis-propiedades');
+
+    } catch (error) {
+        console.log(error);
+    }
+}
