@@ -1,9 +1,22 @@
 import { validationResult } from 'express-validator';
 import {Precio, Categoria, Propiedad} from '../models/index.js';
 
-export const admin = (req, res) => {
+export const admin = async (req, res) => {
+    const {id} = req.usuario;
+
+    const propiedades = await Propiedad.findAll({
+        where: {
+            id_usuario: id
+        },
+        include: [
+            {model: Categoria, as: 'categoria'},
+            {model: Precio, as: 'precio'}
+        ]
+    })
+
     res.render('../views/propiedades/admin.pug', {
-        pagina: 'Mis propiedades'
+        pagina: 'Mis propiedades',
+        propiedades
     });
 }
 
