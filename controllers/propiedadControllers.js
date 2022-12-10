@@ -1,3 +1,4 @@
+import { unlink } from 'node:fs/promises';
 import { validationResult } from 'express-validator';
 import {Precio, Categoria, Propiedad} from '../models/index.js';
 
@@ -16,6 +17,7 @@ export const admin = async (req, res) => {
 
     res.render('../views/propiedades/admin.pug', {
         pagina: 'Mis propiedades',
+        csrfToken: req.csrfToken(),
         propiedades
     });
 }
@@ -245,4 +247,31 @@ export const actualizar = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+}
+
+//? Eliminar propiedades
+export const eliminar = async (req, res) => {
+    //* Extraer parametro
+    const {id} = req.params;
+
+    //* Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id);
+
+    if(!propiedad) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    //* Revisa si es el propietario de la publicación
+    if(propiedad.id_usuario.toString() !== req.usuario.id.toString()) {
+        return res.redirect('/mis-propiedades');
+    }
+
+    //* Eliminar imagen de la propiedad
+    await unlink(`public/uploads/${propiedad.imagen}`);
+    console.log(`Se eliminó la imagen ${propiedad.imagen}`);
+
+    //* Eliminar la propiedad
+    await propiedad.destroy();
+
+    res.redirect('/mis-propiedades');
 }
