@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.leaflet-container a {
+    color: white;
+}
+
+.leaflet-container a span {
+    color: black;
+}
