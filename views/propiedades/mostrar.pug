@@ -13,7 +13,7 @@ block contenido
             a(href="#" class="font-bold text-gray-600 text-sm") Categoría: 
                 span(class="font-normal")= propiedad.categoria.nombre
         
-        div(class="mt-5 md:flex md:gap-4")
+        div(class="mt-5 md:flex md:gap-4 md:items-start")
             div(class="md:w-2/3 bg-white shadow rounded-lg")
                 img(src=`/uploads/${propiedad.imagen}`, alt=propiedad.titulo class="rounded-md")
 
@@ -42,12 +42,30 @@ block contenido
                     p(class="hidden" id="lat")= propiedad.lat
                     p(class="hidden" id="lng")= propiedad.lng
 
-                if propiedad.calle 
-                    div(class="p-5 rounded")
-                        p(class="text-gray-600 font-bold text-xs") Dirección: 
-                            span(id="calle" class="text-gray-900 block text-lg")= propiedad.calle
-                else 
-                    span(id="calle" class="text-gray-900 block text-lg")= propiedad.calle
+                div(class="p-5")
+
+                    if propiedad.calle 
+                        div(class="rounded")
+                            p(class="text-gray-600 font-bold text-xs") Dirección: 
+                                span(id="calle" class="text-gray-900 block text-lg")= propiedad.calle
+                    else 
+                        span(id="calle" class="text-gray-900 block text-lg")= propiedad.calle
+
+                    if !esVendedor
+                        h3(class="font-bold text-xl text-center text-gray-900") Vendedor
+
+                        if usuario
+                            form(method="POST")
+                                input(type="hidden", name="_csrf" value=csrfToken)
+
+                                div(class="space-y-5 mb-3")
+                                    label(for="mensaje") Mensaje
+                                    textarea#mensaje(name="mensaje" placeholder="Envie un mensaje al vendedor" class="w-full py-2 border border-gray-300 rounded-lg shadow placeholder-gray-400")
+                                    input(type="submit", value="Enviar mensaje" class="bg-indigo-600 font-bold text-white uppercase w-full text-sm p-2 cursor-pointer")
+                        else 
+                            div(class="flex justify-center gap-2 mt-3 flex-col items-center")
+                                p(class="text-center") Si deseas contactar al vendedor
+                                a(class="text-indigo-600 mb-4" href="/auth/register") debes crear una cuenta
 block script 
     script(src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js")
     script(src="/js/mostrarMapa.js")

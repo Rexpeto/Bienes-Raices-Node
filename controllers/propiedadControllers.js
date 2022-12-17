@@ -1,6 +1,7 @@
 import { unlink } from "node:fs/promises";
 import { validationResult } from "express-validator";
 import { Precio, Categoria, Propiedad } from "../models/index.js";
+import { esVendedor } from '../helpers/index.js';
 
 export const admin = async (req, res) => {
   //? Leer query string
@@ -107,8 +108,6 @@ export const guardar = async (req, res) => {
       lng,
     } = req.body;
     const { id: id_usuario } = req.usuario;
-
-    console.log(id_usuario);
 
     const propiedadGuardar = await Propiedad.create({
       titulo,
@@ -345,6 +344,9 @@ export const mostrarPropiedad = async (req, res) => {
 
   res.render("propiedades/mostrar", {
     pagina: propiedad.titulo,
+    csrfToken: req.csrfToken(),
     propiedad,
+    usuario: req.usuario,
+    esVendedor: esVendedor(req.usuario?.id, propiedad.id_usuario)
   });
 };
