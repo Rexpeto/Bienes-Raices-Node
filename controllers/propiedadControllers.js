@@ -1,6 +1,6 @@
 import { unlink } from "node:fs/promises";
 import { validationResult } from "express-validator";
-import { Precio, Categoria, Propiedad } from "../models/index.js";
+import { Precio, Categoria, Propiedad, Mensaje } from "../models/index.js";
 import { esVendedor } from "../helpers/index.js";
 
 export const admin = async (req, res) => {
@@ -381,4 +381,23 @@ export const enviarMensaje = async (req, res) => {
             errores: resultado.array()
         });
     }
+
+    const {mensaje} = req.body;
+    const {id:id_usuario} = req.usuario
+
+    //* Almacenar mensaje
+    await Mensaje.create({
+      mensaje,
+      id_propiedad: id,
+      id_usuario: id_usuario
+    })
+
+    res.render("propiedades/mostrar", {
+      pagina: propiedad.titulo,
+      csrfToken: req.csrfToken(),
+      propiedad,
+      usuario: req.usuario,
+      esVendedor: esVendedor(req.usuario?.id, propiedad.id_usuario),
+      enviado: true
+  });
 };
