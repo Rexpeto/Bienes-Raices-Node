@@ -16,6 +16,9 @@ Propiedad.belongsTo(Usuario, {foreignKey: 'id_usuario'});
 //? Crea asosiación 1:1 Mensaje tiene una propiedad
 Mensaje.belongsTo(Propiedad, {foreignKey: 'id_propiedad'});
 
+//? Crea asociación 1:1 Mensaje tiene un usuario
+Mensaje.belongsTo(Usuario, {foreignKey: 'id_usuario'});
+
 export {
     Categoria,
     Propiedad,
