@@ -1,7 +1,7 @@
 import { unlink } from "node:fs/promises";
 import { validationResult } from "express-validator";
 import { Precio, Categoria, Propiedad, Mensaje, Usuario } from "../models/index.js";
-import { esVendedor } from "../helpers/index.js";
+import { esVendedor, formatearFecha } from "../helpers/index.js";
 
 export const admin = async (req, res) => {
     //? Leer query string
@@ -429,6 +429,7 @@ export const verMensaje = async (req, res) => {
 
 	res.render('propiedades/mensajes', {
 		pagina: 'Mensajes',
-		mensajes: propiedad.mensajes
+		mensajes: propiedad.mensajes,
+        formatearFecha 
 	})
 };
