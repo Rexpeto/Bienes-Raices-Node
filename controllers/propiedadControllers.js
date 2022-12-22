@@ -1,6 +1,6 @@
 import { unlink } from "node:fs/promises";
 import { validationResult } from "express-validator";
-import { Precio, Categoria, Propiedad, Mensaje } from "../models/index.js";
+import { Precio, Categoria, Propiedad, Mensaje, Usuario } from "../models/index.js";
 import { esVendedor } from "../helpers/index.js";
 
 export const admin = async (req, res) => {
@@ -404,5 +404,31 @@ export const enviarMensaje = async (req, res) => {
 };
 
 export const verMensaje = async (req, res) => {
-	res.send('mensaje');
+	//* Extraer parametro
+    const { id } = req.params;
+
+    //* Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id, {
+		include: [
+			{ model: Mensaje, as: 'mensajes', 
+				include: [
+					{model: Usuario.scope('eliminarPassword'), as: 'usuario'}
+				]
+			}
+		],
+	});
+
+    if (!propiedad) {
+        return res.redirect("/mis-propiedades");
+    }
+
+    //* Revisa si es el propietario de la publicación
+    if (propiedad.id_usuario.toString() !== req.usuario.id.toString()) {
+        return res.redirect("/mis-propiedades");
+    }
+
+	res.render('propiedades/mensajes', {
+		pagina: 'Mensajes',
+		mensajes: propiedad.mensajes
+	})
 };
