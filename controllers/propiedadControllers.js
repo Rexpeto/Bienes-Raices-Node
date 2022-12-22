@@ -1,7 +1,7 @@
 import { unlink } from "node:fs/promises";
 import { validationResult } from "express-validator";
 import { Precio, Categoria, Propiedad } from "../models/index.js";
-import { esVendedor } from '../helpers/index.js';
+import { esVendedor } from "../helpers/index.js";
 
 export const admin = async (req, res) => {
   //? Leer query string
@@ -21,21 +21,21 @@ export const admin = async (req, res) => {
     const offset = paginaActual * limit - limit;
 
     const [propiedades, total] = await Promise.all([
-        Propiedad.findAll({
-            limit,
-            offset,
-            where: {
-                id_usuario: id,
-          },
-          include: [
-            { model: Categoria, as: "categoria" },
-            { model: Precio, as: "precio" },
-          ],
-        }),
+      Propiedad.findAll({
+        limit,
+        offset,
+        where: {
+          id_usuario: id,
+        },
+        include: [
+          { model: Categoria, as: "categoria" },
+          { model: Precio, as: "precio" },
+        ],
+      }),
 
-        Propiedad.count({
-            where: { id_usuario: id }
-        })
+      Propiedad.count({
+        where: { id_usuario: id },
+      }),
     ]);
 
     res.render("../views/propiedades/admin.pug", {
@@ -46,7 +46,7 @@ export const admin = async (req, res) => {
       paginaActual,
       offset,
       limit,
-      total
+      total,
     });
   } catch (error) {
     console.log(error);
@@ -347,6 +347,38 @@ export const mostrarPropiedad = async (req, res) => {
     csrfToken: req.csrfToken(),
     propiedad,
     usuario: req.usuario,
-    esVendedor: esVendedor(req.usuario?.id, propiedad.id_usuario)
+    esVendedor: esVendedor(req.usuario?.id, propiedad.id_usuario),
   });
+};
+
+export const enviarMensaje = async (req, res) => {
+    //* extraer id de la propiedad
+    const { id } = req.params;
+
+    //* Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id, {
+        include: [
+        { model: Categoria, as: "categoria" },
+        { model: Precio, as: "precio" },
+        ],
+    });
+
+    if (!propiedad) {
+        return res.redirect("/404");
+    }
+
+    //* Renderizar errores
+    let resultado = validationResult(req);
+
+    //* Si el arreglo de resultado está vació
+    if (!resultado.isEmpty()) {
+        return res.render("propiedades/mostrar", {
+            pagina: propiedad.titulo,
+            csrfToken: req.csrfToken(),
+            propiedad,
+            usuario: req.usuario,
+            esVendedor: esVendedor(req.usuario?.id, propiedad.id_usuario),
+            errores: resultado.array()
+        });
+    }
 };
