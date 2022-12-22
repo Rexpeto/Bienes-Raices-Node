@@ -30,6 +30,7 @@ export const admin = async (req, res) => {
                 include: [
                     { model: Categoria, as: "categoria" },
                     { model: Precio, as: "precio" },
+					{ model: Mensaje, as: 'mensajes' }
                 ],
             }),
 
@@ -400,4 +401,8 @@ export const enviarMensaje = async (req, res) => {
         esVendedor: esVendedor(req.usuario?.id, propiedad.id_usuario),
         enviado: true,
     });
+};
+
+export const verMensaje = async (req, res) => {
+	res.send('mensaje');
 };
