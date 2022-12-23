@@ -1,5 +1,8 @@
 extends ../layout/admin
 
+block styles
+    meta(name="csrf-token" content=csrfToken)
+
 block contenido 
     .py-5 
         h1.text-4xl.my-8.font-extrabold.text-center Bienes
@@ -29,10 +32,8 @@ block contenido
 
                                 a(href=`/mensajes/${propiedad.id}` class="text-sm text-gray-600")= `${propiedad.mensajes.length} Mensajes`
 
-                            div(class="sm:w-1/4 md:w-2/6 lg:flex-1 flex flex-col gap-2 md:flex-row")
-                                form(method="POST")
-                                    input(type="hidden", name="_csrf" value=csrfToken)
-                                    input(type="submit" class=`px-2 py-2 md:py-1 text-xs leading-5 font-semibold rounded-sm ${propiedad.publicado ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'} cursor-pointer w-full` value=`${propiedad.publicado ? 'Publicado' : 'No publicado'}`)
+                            div(class="sm:w-1/4 md:w-2/6 lg:1/6 flex flex-col gap-2 xl:flex-row")
+                                button(type="button" class=`cambiar-estado px-2 py-2 md:py-1 text-xs leading-5 font-semibold rounded-sm ${propiedad.publicado ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'} cursor-pointer w-full` data-change=`${propiedad.id}`)=`${propiedad.publicado ? 'Publicado' : 'No publicado'}`
 
                                 a(href=`/propiedades/editar/${propiedad.id}` class="px-2 py-2 md:py-1 text-xs leading-5 font-semibold rounded-sm bg-indigo-100 text-indigo-800 text-center") Editar
 
@@ -60,3 +61,6 @@ block contenido
                             - n++; 
     else
         p.text-center No tienes propiedades
+
+block script 
+    script(src="/js/cambiarEstado.js") 
