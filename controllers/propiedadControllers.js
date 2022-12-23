@@ -366,7 +366,7 @@ export const mostrarPropiedad = async (req, res) => {
         ],
     });
 
-    if (!propiedad) {
+    if (!propiedad || !propiedad.publicado) {
         return res.redirect("/404");
     }
 
